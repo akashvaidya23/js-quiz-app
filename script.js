@@ -88,28 +88,21 @@ const questionElement = document.getElementById("question");
 const answerButtonsElement = document.getElementById("answer-buttons");
 let nextElement = document.getElementsByClassName("next-buttons");
 nextElement = nextElement[0];
-
-const result = document.querySelector('#result');
+let resetBtn = document.querySelector(".reset-buttons");
+let result = document.querySelector('#result');
+let buttons = document.querySelectorAll(".btn");
+buttons = Array.from(buttons);
+let scoreSpan = document.querySelector('#score');
 
 let currentQuestionIndex = 0;
 let score = 0;
 
 const renderQuestion = (currentQuestionIndex) => {
-  // console.log("Rendering question");
-  let buttons = document.querySelectorAll(".btn");
-  buttons = Array.from(buttons);
-  // console.log(buttons);
   questionElement.innerHTML = questions[currentQuestionIndex].question;
   questionElement.style.display = "block";
   result.innerHTML = "";
-  let resetBtn = document.querySelector(".reset-buttons");
-  if(resetBtn){
-    resetBtn.style.display = "none";
-  }
-  let span = document.querySelector('.score');
-  if(span){
-    span.style.display = "none";
-  }
+  resetBtn.style.display = "none";
+  scoreSpan.innerText = "";
   answerButtonsElement.style.display = "block";
   nextElement.style.display = "block";
   document.querySelector(".quiz").style.display = "block";
@@ -118,15 +111,13 @@ const renderQuestion = (currentQuestionIndex) => {
     button.removeAttribute("disabled");
     button.style.color = "#000";
     button.style.backgroundColor = "#fff";
-    button.style.display= "block";
+    button.style.display = "block";
   });
-  // console.log("Rendered questions");
+  console.log("Rendered questions");
 }
 
 renderQuestion(currentQuestionIndex);
 
-let buttons = document.querySelectorAll(".btn");
-buttons = Array.from(buttons);
 buttons.map((button) => {
   button.addEventListener("click", function() {
     let answers = questions[currentQuestionIndex].answers;
@@ -135,6 +126,7 @@ buttons.map((button) => {
     });
     correctAnswer = correctAnswer[0].text;
     let selectedOption = this.innerHTML;
+    result.style.display = "block";
     if (correctAnswer == selectedOption) {
       score = score + 1;
       result.innerText = "Correct Answer";
@@ -177,21 +169,15 @@ const endQuiz = () => {
   nextElement.style.display = "none";
   result.style.display = "none";
   let app = document.querySelector('.app');
-  let span = document.createElement('span');
-  span.setAttribute("class","score")
-  span.innerText = `Your score is ${score}`;
-
-  let button = document.createElement('button');
-  button.setAttribute("class", "reset-buttons");
-  button.addEventListener("click", resetQuiz);
-  button.innerText = "Reset";
-  app.appendChild(span);
-  app.appendChild(button);
+  scoreSpan.innerText = `Your score is ${score}`;
+  scoreSpan.style.display = "block";
+  resetBtn.style.display = "block";
 }
+
+resetBtn.addEventListener("click", resetQuiz);
 
 function resetQuiz() {
   currentQuestionIndex = 0;
   score = 0;
   renderQuestion(currentQuestionIndex);
-  alert("reset button");
 }
